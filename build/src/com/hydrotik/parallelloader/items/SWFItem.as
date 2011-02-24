@@ -113,7 +113,7 @@ package com.hydrotik.parallelloader.items {
 			_center = false;
 		}
 
-		public function deConfigureListeners() : void {
+		override public function deConfigureListeners() : void {
 			if(_loader.contentLoaderInfo.hasEventListener(ProgressEvent.PROGRESS)) _loader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
 			if(_loader.contentLoaderInfo.hasEventListener(Event.COMPLETE)) _loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, preCompleteProcess);
 			if(_loader.contentLoaderInfo.hasEventListener(HTTPStatusEvent.HTTP_STATUS)) _loader.contentLoaderInfo.removeEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);

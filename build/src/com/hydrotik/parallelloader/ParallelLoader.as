@@ -214,7 +214,26 @@ package com.hydrotik.parallelloader {
 		public function updateTotal(bytes:int):void{
 			_totalBytes = _totalBytes + bytes;
 		}
-
+		
+		/**
+		 * @description Removes Items Loaded from memory for Garbage Collection
+		 * @return	void
+		 */
+		public function dispose() : void {
+			if(ParallelLoaderConst.VERBOSE) debug(">> dispose()");
+			
+			while(_loadingQueue.length > 0) {
+				var item : ILoadable = _loadingQueue.pop();
+				item.deConfigureListeners();
+				if(item.isLoaded) item.dispose();
+				item = null;
+			}
+			if(_id != "") {
+				var removed : Boolean = PLManager.removeQueue(_id);
+				if(ParallelLoaderConst.VERBOSE) debug("QueueRemoved: " + _id, removed);
+			}
+			init();
+		};
 		
 		
 		// --== Implemented interface methods ==--

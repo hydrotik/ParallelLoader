@@ -70,7 +70,7 @@ package com.hydrotik.parallelloader {
 //
 //		function get loading() : Boolean;
 //
-//		function dispose() : void;
+		function dispose() : void;
 //
 //		function isLoading() : Boolean;
 
