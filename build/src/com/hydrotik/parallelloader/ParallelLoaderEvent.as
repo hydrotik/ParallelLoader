@@ -98,6 +98,11 @@ package com.hydrotik.parallelloader {
 			this.bytesTotal = bytesTotal;
 			this.bytesLoaded = bytesLoaded;
 			this.bandwidth = bandwidth;
+			if(currItem){
+				this.title = currItem.title;
+				this.width = currItem.width;
+				this.height = currItem.height;
+			}
 		}
 	}
 }

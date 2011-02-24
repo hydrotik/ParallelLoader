@@ -98,6 +98,7 @@ package com.hydrotik.parallelloader {
 		protected var _packetRec : Array;
 
 		protected var _id : String = "";
+		
 		private var _bytesLoaded : Vector.<Number>;
 
 		/**
@@ -203,7 +204,6 @@ package com.hydrotik.parallelloader {
 			_prevBytes = 0;
 			for (var i : int = 0; i < _loadingQueue.length; i++) {
 				if(_loadingQueue[i].registerItem(this)){
-					_loadingQueue[i].length = _loadingQueue.length;
 					_loadingQueue[i].index = i;
 					_bytesLoaded[i] = 0;
 					_loadingQueue[i].load();
@@ -242,8 +242,8 @@ package com.hydrotik.parallelloader {
 			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_HTTP_STATUS, null, _totalBytes, _currBytes, _percentage));
 		}
 		
-		public function ioErrorHandler(event : IOErrorEvent) : void {
-			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_ERROR, null, _totalBytes, _currBytes, _percentage));
+		public function ioErrorHandler(currItem:ILoadable) : void {
+			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_ERROR, currItem, _totalBytes, _currBytes, _percentage));
 		}
 
 		public function openHandler(currItem:ILoadable) : void {

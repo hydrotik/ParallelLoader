@@ -24,18 +24,15 @@
  */
 
 package com.hydrotik.parallelloader {
-	import flash.events.IEventDispatcher;
 	import flash.events.HTTPStatusEvent;
-	import flash.events.ProgressEvent;
-	import flash.events.Event;
-	import flash.events.IOErrorEvent;
+	import flash.events.IEventDispatcher;
 
 	/**
 	 * @author Donovan | 0.1.0
 	 */
 	public interface IParallelLoader extends IEventDispatcher {
 
-		function ioErrorHandler(event : IOErrorEvent) : void;
+		function ioErrorHandler(currItem:ILoadable) : void;
 
 		function openHandler(currItem:ILoadable) : void ;
 

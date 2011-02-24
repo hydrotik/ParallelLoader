@@ -63,13 +63,17 @@ package {
 			
 			_containers = new Vector.<Sprite>();
 			
-			_items.push({src:"../flashassets/images/thumbnail1.jpg", title:"image 1"});
-			_items.push({src:"../flashassets/images/thumbnail2.jpg", title:"image 2"});
-			_items.push({src:"../flashassets/images/thumbnail3.jpg", title:"image 3"});
-			_items.push({src:"../flashassets/images/thumbnail4.jpg", title:"image 4"});
-			_items.push({src:"../flashassets/images/thumbnail5.jpg", title:"image 5"});
-			_items.push({src:"../flashassets/images/thumbnail6.jpg", title:"image 6"});
-			_items.push({src:"../flashassets/images/thumbnail7.jpg", title:"image 7"});
+			_items.push({src:"../flashassets/images/thumbnail1.jpg", title:"Image 1"});
+			_items.push({src:"../flashassets/images/thumbnail2.jpg", title:"Image 2"});
+			_items.push({src:"../flashassets/images/thumbnail3.jpg", title:"Image 3"});
+			_items.push({src:"../flashassets/images/thumbnail4.jpg", title:"Image 4"});
+			_items.push({src:"../flashassets/images/thumbnail5.jpg", title:"Image 5"});
+			_items.push({src:"../flashassets/images/thumbnail6.jpg", title:"Image 6"});
+			_items.push({src:"../flashassets/images/thumbnail7.jpg", title:"Image 7"});
+			// Error Test
+			//_items.push({src:"../flashassets/images/thumbnail8.jpg", title:"image 8"});
+			// SWF Test
+			_items.push({src:"swf_asset.swf", title:"SWF Item 8"});
 			
 			_pl = new ParallelLoader();
 			
@@ -125,11 +129,11 @@ package {
 		}
 		
 		private function onItemStartHandler(event : ParallelLoaderEvent) : void {
-			trace("\tItem Start");
+			trace("\t"+event.title+" Start");
 		}
 
 		private function onItemCompleteHandler(event : ParallelLoaderEvent) : void {
-			trace("\t" + event.currItem.index+ ": Item Complete");
+			trace("\t"+event.title+" Complete, " + event.width, event.height);
 		}
 		
 		private function onItemErrorHandler(event : ParallelLoaderEvent) : void {
