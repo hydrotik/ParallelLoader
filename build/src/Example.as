@@ -75,7 +75,7 @@ package {
 			// SWF Test
 			_items.push({src:"swf_asset.swf", title:"SWF Item 8"});
 			
-			_pl = new ParallelLoader();
+			_pl = new ParallelLoader(false, null, "test", 2);
 			
 			var startX:int = 10;
 			var startY:int = 10;

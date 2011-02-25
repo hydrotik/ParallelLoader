@@ -84,19 +84,13 @@ package com.hydrotik.parallelloader {
 		
 		protected var _isComplete : Boolean;
 
-		protected var _bandwidth : Number;
-
-		protected var _prevBytes : Number;
-
-		protected var _bwTimer : Timer;
-
-		protected var _bwChecking : Boolean;
-
-		protected var _packetRec : Array;
-
 		protected var _id : String = "";
 		
-		private var _bytesLoaded : Vector.<Number>;
+		protected var _maxConnections : int;
+		
+		protected var _activeIndex : int;
+		
+		protected var _loadedBytes : Vector.<int>;
 
 		/**
 		 * ParallelLoader AS 3
@@ -120,7 +114,7 @@ package com.hydrotik.parallelloader {
 		 * @return	void
 		 * @description Contructor for ParallelLoader
 		 */
-		public function ParallelLoader(ignoreErrors : Boolean = false, loaderContext : LoaderContext = null, bandwidthMonitoring : Boolean = false, id : String = "") {
+		public function ParallelLoader(ignoreErrors : Boolean = false, loaderContext : LoaderContext = null, id : String = "", maxConnections:int = -1) {
 			if(!_init) _init = ItemList.initItems();
 			dispatcher = new EventDispatcher(this);
 			debug = trace;
@@ -129,9 +123,8 @@ package com.hydrotik.parallelloader {
 			_isComplete = false;
 			_loaderContext = loaderContext;
 			_ignoreErrors = ignoreErrors;
-			_bwChecking = bandwidthMonitoring;
-			if(_bwChecking) _bwTimer = new Timer(100);
 			_id = id;
+			_maxConnections = maxConnections;
 			if(_id != "") PLManager.addQueue(_id, this);
 		}
 
@@ -187,7 +180,7 @@ package com.hydrotik.parallelloader {
 		 * @return	void
 		 */
 		public function execute() : void {
-			if(ParallelLoaderConst.VERBOSE) debug(">> execute() " + [_isLoading, _bwTimer]);
+			if(ParallelLoaderConst.VERBOSE) debug(">> execute() " + [_isLoading]);
 			if(_loadingQueue.length < 1){
 				throw new Error("Your ParallelLoader queue has nothing in it!");
 			}
@@ -197,14 +190,17 @@ package com.hydrotik.parallelloader {
 			_percentage = 0;
 			_currBytes = 0;
 			_totalBytes = 0;
-			_bandwidth = 0;
-			_prevBytes = 0;
-			for (var i : int = 0; i < _loadingQueue.length; i++) {
-				if(_loadingQueue[i].registerItem(this)){
-					_loadingQueue[i].index = i;
-					_bytesLoaded[i] = 0;
-					_loadingQueue[i].load();
-				}
+			_activeIndex = 0;
+			for (var i : int = 0; i < (_maxConnections == -1 ? _loadingQueue.length : _maxConnections); i++) {
+				loadItem(i);
+			}
+		}
+		
+		protected function loadItem(index:int):void{
+			if(_loadingQueue[index].registerItem(this)){
+				_loadingQueue[index].index = index;
+				_loadingQueue[index].load();
+				_activeIndex++;
 			}
 		}
 		
@@ -268,22 +264,31 @@ package com.hydrotik.parallelloader {
 				_isLoading = true;
 			}
 			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_START, currItem as ILoadableAsset, _totalBytes, _currBytes, _percentage));
+			
 		}
-
+		
+		//FIXME Figure out how to handle the pooling and overall progress
 		public function progressHandler() : void {
 			var total:Number = 0;
-			for (var i : int = 0; i < _loadingQueue.length; i++) {
+			var loaded:int = 0;
+			var i:int;
+			for (i = _index; i < _activeIndex; i++) {
 				dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_PROGRESS, _loadingQueue[i] as ILoadableAsset, _totalBytes, _currBytes, _percentage));
 				total = total + _loadingQueue[i].bytesLoaded;
 			}
-			_currBytes = total;
-			_percentage = _currBytes / _totalBytes;
+			for (i = 0; i < _loadedBytes.length; i++) {
+				loaded = loaded + _loadedBytes[i];
+			}
+			_currBytes = total + loaded;
+			_percentage = _currBytes / (_totalBytes/loaded);
 			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.PROGRESS, null, _totalBytes, _currBytes, _percentage));
 		}
 
 		
 		public function completeHandler(currItem:ILoadable) : void {
 			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_COMPLETE, currItem as ILoadableAsset, _totalBytes, _currBytes, _percentage));
+			_loadedBytes.push(currItem.bytesLoaded);
+			if(_activeIndex < _loadingQueue.length)  loadItem(_activeIndex);
 			if(_index == _loadingQueue.length - 1){
 				dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.COMPLETE, null, _totalBytes, _currBytes, _percentage));
 				_isLoading = false;
@@ -300,7 +305,7 @@ package com.hydrotik.parallelloader {
 
 		protected function init() : void {
 			_loadingQueue = new Vector.<ILoadable>();
-			_bytesLoaded = new Vector.<Number>();
+			_loadedBytes = new Vector.<int>();
 			_ignoreErrors = false;
 			_loaderContext = null;
 			_index = 0;
@@ -308,10 +313,6 @@ package com.hydrotik.parallelloader {
 			_percentage = 0;
 			_currBytes = 0;
 			_totalBytes = 0;
-			_bandwidth = 0;
-			_prevBytes = 0;
-			_bwChecking = false;
-			_packetRec = [];
 		}
 
 //		protected function loadNextItem() : void {
@@ -326,16 +327,6 @@ package com.hydrotik.parallelloader {
 			} else {
 				return true;
 			}
-		}
-
-		protected function checkBandwidth(event : TimerEvent) : void {
-			var bw : Number = (_currBytes - _prevBytes) / 1024;
-			_packetRec.push(bw);
-			if(_packetRec.length == 100) _packetRec.shift();
-			var buffer : Number = 0;
-			for (var i : int = 0;i < _packetRec.length; i++) buffer = buffer + _packetRec[i];  
-			_bandwidth = round((((buffer) / _packetRec.length) * (_bwTimer.delay)) * (80 / 1000), 3);
-			_prevBytes = _currBytes;
 		}
 
 		protected function round(num : Number, decimal : Number = 1) : Number {
