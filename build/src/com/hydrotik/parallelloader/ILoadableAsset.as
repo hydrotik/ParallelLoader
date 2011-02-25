@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright 2007-2011 (c) Donovan Adams, http://blog.hydrotik.com/
  *
  * Permission is hereby granted, free of charge, to any person
@@ -23,41 +23,31 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
 package com.hydrotik.parallelloader {
+	import flash.net.URLRequest;
 
 	/**
-	 * @author
+	 * @author Donovan Adams | Hydrotik | http://blog.hydrotik.com
+	 * @version 0.1.0
+	 * @exampleText Provides a forward facing access point for loaded items to the developer
 	 */
-	public final class ParallelLoaderConst {
-
-		/***************************************
-		 ******	 LOADABLE ITEM LIST   **********
-		 ***************************************/
-
-		public static const FILE_IMAGE : int = 1;
-
-		public static const FILE_SWF : int = 2;
-
-		public static const FILE_XML : int = 3;
-
-		public static const FILE_CSS : int = 4;
-
-		public static const FILE_MP3 : int = 5;
-
-		public static const FILE_ZIP : int = 6;
-
-		public static const FILE_WAV : int = 7;
-
-		public static const FILE_FLV : int = 8;
-
-		public static const FILE_GENERIC : int = 9;
-
-		public static const VERSION : String = "ParallelLoader 0.1.0";
-
-		public static const AUTHOR : String = "Donovan Adams - donovan[(replace at)]hydrotik.com";
-
-		public static var VERBOSE : Boolean = false;
-
-		public static var VERBOSE_BANDWITH : Boolean = false;
+	public interface ILoadableAsset {
+		function get percentage():Number;
+		function get bytesLoaded():int;
+		function get bytesTotal():int;
+		function get target():*;
+		function get container():*;
+		function get message():String;
+		function get path():URLRequest;
+		function get title():String;
+		function set index(i:int):void;
+		function get index():int;
+		function set isLoading(b:Boolean):void;
+		function get isLoading():Boolean;
+		function set isLoaded(b:Boolean):void;
+		function get isLoaded():Boolean;
+		function get width() : Number;
+		function get height() : Number;
 	}
 }

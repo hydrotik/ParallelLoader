@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2009 (c) Donovan Adams, http://blog.hydrotik.com/
+* Copyright 2007-2011 (c) Donovan Adams, http://blog.hydrotik.com/
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,13 +25,10 @@
 
 
 package com.hydrotik.parallelloader {
-	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.HTTPStatusEvent;
 	import flash.events.IEventDispatcher;
-	import flash.events.IOErrorEvent;
-	import flash.events.ProgressEvent;
 	import flash.events.TimerEvent;
 	import flash.net.URLRequest;
 	import flash.system.Capabilities;
@@ -262,7 +259,7 @@ package com.hydrotik.parallelloader {
 		}
 		
 		public function ioErrorHandler(currItem:ILoadable) : void {
-			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_ERROR, currItem, _totalBytes, _currBytes, _percentage));
+			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_ERROR, currItem as ILoadableAsset, _totalBytes, _currBytes, _percentage));
 		}
 
 		public function openHandler(currItem:ILoadable) : void {
@@ -270,13 +267,13 @@ package com.hydrotik.parallelloader {
 				dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.START, null, _totalBytes, _currBytes, _percentage));
 				_isLoading = true;
 			}
-			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_START, currItem, _totalBytes, _currBytes, _percentage));
+			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_START, currItem as ILoadableAsset, _totalBytes, _currBytes, _percentage));
 		}
 
 		public function progressHandler() : void {
 			var total:Number = 0;
 			for (var i : int = 0; i < _loadingQueue.length; i++) {
-				dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_PROGRESS, _loadingQueue[i], _totalBytes, _currBytes, _percentage));
+				dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_PROGRESS, _loadingQueue[i] as ILoadableAsset, _totalBytes, _currBytes, _percentage));
 				total = total + _loadingQueue[i].bytesLoaded;
 			}
 			_currBytes = total;
@@ -286,7 +283,7 @@ package com.hydrotik.parallelloader {
 
 		
 		public function completeHandler(currItem:ILoadable) : void {
-			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_COMPLETE, currItem, _totalBytes, _currBytes, _percentage));
+			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_COMPLETE, currItem as ILoadableAsset, _totalBytes, _currBytes, _percentage));
 			if(_index == _loadingQueue.length - 1){
 				dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.COMPLETE, null, _totalBytes, _currBytes, _percentage));
 				_isLoading = false;

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2007-2009 (c) Donovan Adams, http://blog.hydrotik.com/
+* Copyright 2007-2011 (c) Donovan Adams, http://blog.hydrotik.com/
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -62,7 +62,7 @@ package com.hydrotik.parallelloader {
 
 		public var fileType : int;
 		
-		public var currItem : ILoadable;
+		public var currItem : ILoadableAsset;
 
 		public var path : URLRequest;
 
@@ -91,7 +91,7 @@ package com.hydrotik.parallelloader {
 		public var info : Object = null;
 		
 
-		public function ParallelLoaderEvent( type : String, currItem:ILoadable, bytesTotal:Number, bytesLoaded:Number, percentage:Number, bubbles : Boolean = false, cancelable : Boolean = false) {
+		public function ParallelLoaderEvent( type : String, currItem:ILoadableAsset, bytesTotal:Number, bytesLoaded:Number, percentage:Number, bubbles : Boolean = false, cancelable : Boolean = false) {
 			super(type, bubbles, cancelable);
 			this.currItem = currItem;
 			this.percentage = percentage;
