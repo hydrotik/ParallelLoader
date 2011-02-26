@@ -1,0 +1,11 @@
+<project>
+  	<fdt.flashCompile file="../build/example.fla" timeout="5000" />
+	<fdt.extSWFViewer.startSWF file="http://localhost:8888/index.html" width="640" height="480" focusprocess="Adobe Flash Player"/>
+	<fdt.startProfiler collectstackdata="true" filterinternalpackages="true" 
+	   memoryprofilingenabled="true" performanceprofilingenabled="false" 
+	   projectname="ParallelLoader" targetswf="../bin/swf/example.swf" />
+	<!--<fdt.launch.application projectname="ParallelLoader" mainclass="../build/src/Example.as" profile="true"  
+		    target="../bin/swf/example.swf" startswf="true" swflauncher="Adobe Flash Player"/>-->
+</project>
+
+

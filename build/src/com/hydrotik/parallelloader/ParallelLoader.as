@@ -34,7 +34,8 @@ package com.hydrotik.parallelloader {
 	import flash.system.Capabilities;
 	import flash.system.LoaderContext;
 	import flash.utils.Timer;
-
+	
+	/*
 	[Event(name="ITEM_START", type="com.hydrotik.queueloader.ParallelLoaderEvent")]
 
 	[Event(name="ITEM_PROGRESS", type="com.hydrotik.queueloader.ParallelLoaderEvent")]
@@ -48,7 +49,8 @@ package com.hydrotik.parallelloader {
 	[Event(name="PROGRESS", type="com.hydrotik.queueloader.ParallelLoaderEvent")]
 
 	[Event(name="COMPLETE", type="com.hydrotik.queueloader.ParallelLoaderEvent")]
-
+	*/
+	
 	public class ParallelLoader implements IEventDispatcher, IParallelLoader {
 
 		
@@ -272,15 +274,24 @@ package com.hydrotik.parallelloader {
 			var total:Number = 0;
 			var loaded:int = 0;
 			var i:int;
-			for (i = _index; i < _activeIndex; i++) {
+			
+//			for (i = _index; i < _activeIndex; i++) {
+//				dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_PROGRESS, _loadingQueue[i] as ILoadableAsset, _totalBytes, _currBytes, _percentage));
+//				total = total + _loadingQueue[i].bytesLoaded;
+//			}
+//			for (i = 0; i < _loadedBytes.length; i++) {
+//				loaded = loaded + _loadedBytes[i];
+//			}
+			
+			for (var i : int = 0; i < (_maxConnections == -1 ? _loadingQueue.length : _maxConnections); i++) {
 				dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_PROGRESS, _loadingQueue[i] as ILoadableAsset, _totalBytes, _currBytes, _percentage));
 				total = total + _loadingQueue[i].bytesLoaded;
 			}
-			for (i = 0; i < _loadedBytes.length; i++) {
-				loaded = loaded + _loadedBytes[i];
-			}
-			_currBytes = total + loaded;
-			_percentage = _currBytes / (_totalBytes/loaded);
+			
+			//_currBytes = total + loaded;
+			_currBytes = total;
+			//_percentage = _currBytes / (_totalBytes/loaded);
+			_percentage = _currBytes / _totalBytes;
 			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.PROGRESS, null, _totalBytes, _currBytes, _percentage));
 		}
 

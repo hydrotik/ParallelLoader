@@ -25,6 +25,7 @@
 
 
 package {
+	import flash.system.Capabilities;
 	import flash.display.Graphics;
 
 	import com.hydrotik.parallelloader.ParallelLoaderEvent;
@@ -73,9 +74,9 @@ package {
 			// Error Test
 			//_items.push({src:"../flashassets/images/thumbnail8.jpg", title:"image 8"});
 			// SWF Test
-			_items.push({src:"swf_asset.swf", title:"SWF Item 8"});
+			_items.push({src:(getMode() ? "swf/" : "" ) + "swf_asset.swf", title:"SWF Item 8"});
 			
-			_pl = new ParallelLoader(false, null, "test", 2);
+			_pl = new ParallelLoader(false, null, "test");
 			
 			var startX:int = 10;
 			var startY:int = 10;
@@ -147,6 +148,14 @@ package {
 		private function drawBar(target:Sprite, width:int):void{
 			target.graphics.beginFill(0x990000);
 			target.graphics.drawRect(0, 0, width, 2);
+		}
+		
+		protected function getMode() : Boolean {
+			if (Capabilities.playerType == "External" || Capabilities.playerType == "StandAlone") {
+				return false;
+			} else {
+				return true;
+			}
 		}
 	}
 }
