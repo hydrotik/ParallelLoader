@@ -283,7 +283,7 @@ package com.hydrotik.parallelloader {
 //				loaded = loaded + _loadedBytes[i];
 //			}
 			
-			for (var i : int = 0; i < (_maxConnections == -1 ? _loadingQueue.length : _maxConnections); i++) {
+			for (i = 0; i < (_maxConnections == -1 ? _loadingQueue.length : _maxConnections); i++) {
 				dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_PROGRESS, _loadingQueue[i] as ILoadableAsset, _totalBytes, _currBytes, _percentage));
 				total = total + _loadingQueue[i].bytesLoaded;
 			}
