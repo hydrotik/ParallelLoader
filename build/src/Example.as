@@ -25,13 +25,11 @@
 
 
 package {
-	import flash.system.Capabilities;
-	import flash.display.Graphics;
-
-	import com.hydrotik.parallelloader.ParallelLoaderEvent;
 	import com.hydrotik.parallelloader.ParallelLoader;
+	import com.hydrotik.parallelloader.ParallelLoaderEvent;
 
 	import flash.display.Sprite;
+	import flash.system.Capabilities;
 
 	/**
 	 * @author Donovan Adams | Hydrotik | http://blog.hydrotik.com

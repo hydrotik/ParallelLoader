@@ -29,27 +29,25 @@ package com.hydrotik.parallelloader {
 	import flash.events.EventDispatcher;
 	import flash.events.HTTPStatusEvent;
 	import flash.events.IEventDispatcher;
-	import flash.events.TimerEvent;
 	import flash.net.URLRequest;
 	import flash.system.Capabilities;
 	import flash.system.LoaderContext;
-	import flash.utils.Timer;
 	
-	/*
-	[Event(name="ITEM_START", type="com.hydrotik.queueloader.ParallelLoaderEvent")]
+	
+	[Event(name="ITEM_START", type="com.hydrotik.parallelloader.ParallelLoaderEvent")]
 
-	[Event(name="ITEM_PROGRESS", type="com.hydrotik.queueloader.ParallelLoaderEvent")]
+	[Event(name="ITEM_PROGRESS", type="com.hydrotik.parallelloader.ParallelLoaderEvent")]
 
-	[Event(name="ITEM_COMPLETE", type="com.hydrotik.queueloader.ParallelLoaderEvent")]
+	[Event(name="ITEM_COMPLETE", type="com.hydrotik.parallelloader.ParallelLoaderEvent")]
 
-	[Event(name="ITEM_ERROR", type="com.hydrotik.queueloader.ParallelLoaderEvent")]
+	[Event(name="ITEM_ERROR", type="com.hydrotik.parallelloader.ParallelLoaderEvent")]
 
-	[Event(name="START", type="com.hydrotik.queueloader.ParallelLoaderEvent")]
+	[Event(name="START", type="com.hydrotik.parallelloader.ParallelLoaderEvent")]
 
-	[Event(name="PROGRESS", type="com.hydrotik.queueloader.ParallelLoaderEvent")]
+	[Event(name="PROGRESS", type="com.hydrotik.parallelloader.ParallelLoaderEvent")]
 
-	[Event(name="COMPLETE", type="com.hydrotik.queueloader.ParallelLoaderEvent")]
-	*/
+	[Event(name="COMPLETE", type="com.hydrotik.parallelloader.ParallelLoaderEvent")]
+	
 	
 	public class ParallelLoader implements IEventDispatcher, IParallelLoader {
 
@@ -269,7 +267,7 @@ package com.hydrotik.parallelloader {
 			
 		}
 		
-		//FIXME Figure out how to handle the pooling and overall progress
+		//FIXME Figure out how to handle the pooling
 		public function progressHandler() : void {
 			var total:Number = 0;
 			var loaded:int = 0;
@@ -283,14 +281,12 @@ package com.hydrotik.parallelloader {
 //				loaded = loaded + _loadedBytes[i];
 //			}
 			
-			for (var i : int = 0; i < (_maxConnections == -1 ? _loadingQueue.length : _maxConnections); i++) {
+			for (i = 0; i < (_maxConnections == -1 ? _loadingQueue.length : _maxConnections); i++) {
 				dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.ITEM_PROGRESS, _loadingQueue[i] as ILoadableAsset, _totalBytes, _currBytes, _percentage));
 				total = total + _loadingQueue[i].bytesLoaded;
 			}
 			
-			//_currBytes = total + loaded;
 			_currBytes = total;
-			//_percentage = _currBytes / (_totalBytes/loaded);
 			_percentage = _currBytes / _totalBytes;
 			dispatchEvent(new ParallelLoaderEvent(ParallelLoaderEvent.PROGRESS, null, _totalBytes, _currBytes, _percentage));
 		}
@@ -325,12 +321,6 @@ package com.hydrotik.parallelloader {
 			_currBytes = 0;
 			_totalBytes = 0;
 		}
-
-//		protected function loadNextItem() : void {
-//			if(!_isLoading && _isComplete) return;
-//			_currItem = _loadingQueue[_index];
-//			if(_currItem.registerItem(this)) _currItem.load();
-//		}
 
 		protected function getMode() : Boolean {
 			if (Capabilities.playerType == "External" || Capabilities.playerType == "StandAlone") {
